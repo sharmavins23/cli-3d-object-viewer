@@ -1,8 +1,24 @@
+[dependencies]
+clap = {version = "4.5.58", features = ["derive"]}
+color-eyre = "0.6.5"
+
+[lints.clippy]
+enum_glob_use = "deny"
+nursery = "deny"
+pedantic = "deny"
+unwrap_used = "deny"
+
+[lints.rust]
+unsafe_code = "forbid"
+
 [package]
+edition = "2024"
 name = "cli-3d-object-viewer"
 version = "0.1.0"
-edition = "2024"
 
-[dependencies]
-clap = { version = "4.5.58", features = ["derive"] }
-color-eyre = "0.6.5"
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = "symbols"
