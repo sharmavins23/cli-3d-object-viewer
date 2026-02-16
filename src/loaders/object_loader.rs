@@ -3,7 +3,8 @@
 use crate::{
     loaders::obj_loader::ObjLoader,
     models::{
-        generic_3d_object::Generic3DObject, supported_file_extensions::SupportedFileExtensions,
+        generic_3d_object::Generic3DObject, object_metadata::ObjectMetadata,
+        supported_file_extensions::SupportedFileExtensions,
     },
     utils::log,
 };
@@ -15,6 +16,12 @@ use color_eyre::eyre::Report;
 pub trait ObjectLoader {
     /// The type of the loaded 3D object.
     type Output;
+
+    /// Gets metadata on a particular 3D object file.
+    ///
+    /// # Errors
+    /// - If the file cannot be read or parsed correctly.
+    fn get_metadata(object: &Self::Output, file_path: &str) -> ObjectMetadata;
 
     /// Loads a 3D object from the specified file path.
     ///

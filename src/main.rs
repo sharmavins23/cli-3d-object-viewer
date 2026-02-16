@@ -4,7 +4,11 @@ use clap::Parser;
 use cli_3d_object_viewer::{
     files::{extract_extension::extract_extension, validate_file::validate_file},
     loaders::object_loader::load_3d_object,
-    models::{cli_arguments::CLIArguments, supported_file_extensions::SupportedFileExtensions},
+    models::{
+        cli_arguments::CLIArguments, generic_3d_object::Generic3DObject,
+        object_viewer_action::ObjectViewerAction,
+        supported_file_extensions::SupportedFileExtensions,
+    },
     utils::log,
 };
 
@@ -33,5 +37,11 @@ fn main() {
     });
 
     log::dbg("Loading 3D object...");
-    let _object = load_3d_object(file_path, &extension);
+    let _object: Generic3DObject = match load_3d_object(file_path, &extension) {
+        Ok(obj) => obj,
+        Err(e) => {
+            log::err(&format!("Failed to load 3D object: {e}"));
+            std::process::exit(1);
+        }
+    };
 }
