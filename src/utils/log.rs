@@ -2,7 +2,7 @@
 
 use color_eyre::owo_colors::OwoColorize;
 
-// ===== Definitions ===========================================================
+// ===== Definition ============================================================
 
 /// Logs a debug message to the console with a consistent format and color.
 pub fn dbg(message: &str) {

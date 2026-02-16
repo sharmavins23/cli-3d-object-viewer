@@ -2,8 +2,9 @@
 
 use clap::Parser;
 use cli_3d_object_viewer::{
-    files::validate_file::validate_file,
-    models::{cli_arguments::CLIArguments, object_viewer_action::ObjectViewerAction},
+    files::{extract_extension::extract_extension, validate_file::validate_file},
+    loaders::object_loader::load_3d_object,
+    models::{cli_arguments::CLIArguments, supported_file_extensions::SupportedFileExtensions},
     utils::log,
 };
 
@@ -14,25 +15,23 @@ fn main() {
     log::dbg("Starting the CLI 3D object viewer...");
     let cli_arguments: CLIArguments = CLIArguments::parse();
 
-    log::dbg("Validating provided file location...");
-    let file_path = match &cli_arguments.action {
-        ObjectViewerAction::Inspect { file } => file,
-        ObjectViewerAction::Render { file } => file,
-    };
+    log::dbg("Extracting file location...");
+    let file_path: &str = cli_arguments.action.file();
 
+    log::dbg("Validating provided file location...");
     if let Err(e) = validate_file(file_path) {
         log::err(&format!("File validation failed: {e}"));
         std::process::exit(1);
     }
 
-    match cli_arguments.action {
-        ObjectViewerAction::Inspect { file } => {
-            log::dbg(&format!(
-                "Inspecting metadata of the 3D object from file: {file}"
-            ));
-        }
-        ObjectViewerAction::Render { file } => {
-            log::dbg(&format!("Rendering the 3D object from file: {file}"));
-        }
-    }
+    log::dbg("Extracting filetype...");
+    let extension: SupportedFileExtensions = extract_extension(file_path).unwrap_or_else(|| {
+        log::err(&format!(
+            "Failed to extract a supported file extension from the provided file path: '{file_path}'"
+        ));
+        std::process::exit(1);
+    });
+
+    log::dbg("Loading 3D object...");
+    let _object = load_3d_object(file_path, &extension);
 }
