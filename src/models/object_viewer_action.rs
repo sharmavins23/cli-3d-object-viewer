@@ -1,4 +1,8 @@
+//! Defines different actions the 3D object viewer can perform.
+
 use clap::Subcommand;
+
+// ===== Definition ============================================================
 
 #[derive(Debug, Subcommand)]
 pub enum ObjectViewerAction {
